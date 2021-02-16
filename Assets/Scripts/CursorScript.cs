@@ -1,7 +1,7 @@
 using UnityEngine;
 public class CursorScript : MonoBehaviour
-{
-    private Transform _cursorPosition;
+{   
+    private Transform cursorLigthPosition;
     private Controllers _input;
     private void Awake()
     {
@@ -17,7 +17,7 @@ public class CursorScript : MonoBehaviour
     }
     private void Start()
     {
-        _cursorPosition = GetComponent<Transform>();
+        cursorLigthPosition = GetComponent<Transform>();
     }
     private void Update()
     {
@@ -29,9 +29,28 @@ public class CursorScript : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(camRay, out hit))
         {
+            if (hit.collider.CompareTag("Ground"))
+            {
+                float x = hit.point.x;
+                float z = hit.point.z;
+                cursorLigthPosition.position = new Vector3(x, 12f, z);
+            }                        
+        }
+    }
+    public Vector3 GetCursorPosition()
+    {
+        Ray camRay = Camera.main.ScreenPointToRay(_input.Player.MousePosition.ReadValue<Vector2>());
+        RaycastHit hit;
+        if (Physics.Raycast(camRay, out hit))
+        {
             float x = hit.point.x;
             float z = hit.point.z;
-            _cursorPosition.position = new Vector3(x, 12f, z);
+            
+            return new Vector3(x, 0, z);
+        }
+        else
+        {
+            return new Vector3(0, 0, 0);
         }
     }
 }
